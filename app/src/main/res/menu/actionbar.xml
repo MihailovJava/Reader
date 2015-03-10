@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="folder"
+          android:id="@+id/folder_action"
+        android:icon="@drawable/ab_folder_action"
+        android:showAsAction="always"
+        android:orderInCategory="100"
+        >
+    </item>
+</menu>
