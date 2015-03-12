@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import ru.edu.reader.R;
+import ru.edu.reader.controllers.tasks.SearchFilesTask;
 
 /**
  * Адаптер для файловой системы андроид
@@ -29,8 +30,8 @@ public class OpenFileAdapter extends BaseAdapter implements View.OnClickListener
     private File parent;        // Корень директории
     private String path;        // Путь директории
     private static final String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath(); // Исходная директория
-    private static final String REG_EX = ".*\\.fb2||.*\\.epub"; // Регулярное выражения для проверки нужного типа файла
-
+    private static final String REG_EX_FB2 = ".*\\.fb2"; // Регулярное выражения для проверки нужного типа файла
+    private static final String REG_EX_EPUB = ".*\\.epub"; // Регулярное выражения для проверки нужного типа файла
     private static OpenFileAdapter me; // Реализация паттерна одиночки
 
     /**
@@ -51,8 +52,14 @@ public class OpenFileAdapter extends BaseAdapter implements View.OnClickListener
         if (me == null){
             me = new OpenFileAdapter(context);
         }
-        me.context = context;
+        if (!me.context.equals(context)) {
+            me.context = context;
+        }
         return me;
+    }
+
+    public List<File> getFiles() {
+        return files;
     }
 
     public String getPath() {
@@ -88,14 +95,15 @@ public class OpenFileAdapter extends BaseAdapter implements View.OnClickListener
         File file = null;
         for (File fromFiles : files) {
             file = fromFiles;
-            if (file.isFile())
-                if (!file.getName().matches(REG_EX)) {
+            if (file.isFile()) {
+                if (!file.getName().matches(REG_EX_EPUB) && !file.getName().matches(REG_EX_FB2)) {
                     this.files.remove(file);
                 } else {
                     if (!file.canExecute()) {
                         this.files.remove(file);
                     }
                 }
+            }
         }
         return file;
     }
@@ -122,18 +130,22 @@ public class OpenFileAdapter extends BaseAdapter implements View.OnClickListener
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        convertView = convertView == null ? LayoutInflater.from(context).inflate(R.layout.open_file_item,parent) : convertView;
-        TextView fileText = (TextView) convertView.findViewById(R.id.file_name);
+        convertView = convertView == null ? LayoutInflater.from(context).inflate(R.layout.open_file_item,null) : convertView;
+        TextView fileNameText = (TextView) convertView.findViewById(R.id.file_name);
+        TextView fileDirText = (TextView) convertView.findViewById(R.id.full_directory);
         ImageView fileImage = (ImageView) convertView.findViewById(R.id.file_image);
         File file = (File) getItem(position);
 
         String fileName = file.getName();
-        fileText.setText(fileName);
+        fileNameText.setText(fileName);
 
         if(file.isFile()){
             fileImage.setImageResource(R.drawable.book_img);
+            fileDirText.setText(file.getAbsolutePath());
+            fileDirText.setVisibility(View.VISIBLE);
         }else {
             fileImage.setImageResource(R.drawable.folder_img);
+            fileDirText.setVisibility(View.GONE);
         }
         convertView.setTag(R.integer.tag_file,file);
         convertView.setOnClickListener(this);
@@ -151,7 +163,8 @@ public class OpenFileAdapter extends BaseAdapter implements View.OnClickListener
             if (file.isDirectory()){
                 parent = file;
                 path = file.getPath();
-                me.setFiles(new ArrayList<>(Arrays.asList(file.listFiles())))
+                File[] files = file.listFiles();
+                me.setFiles(new ArrayList<>(Arrays.asList(files)))
                         .notifyDataSetChanged();
             }else {
                 //TODO Добавить переход на активити чтения
@@ -186,4 +199,12 @@ public class OpenFileAdapter extends BaseAdapter implements View.OnClickListener
         else
             return lhs.getPath().compareTo(rhs.getPath());
     }
+
+    public void find(String query) {
+        new SearchFilesTask(context).execute(query,ROOT_PATH,REG_EX_EPUB,REG_EX_FB2);
+    }
+
+
+
+
 }

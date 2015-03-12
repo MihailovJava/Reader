@@ -15,10 +15,13 @@
         </activity>
         <activity
             android:name=".ui.activity.OpenFileActivity"
-            android:label="@string/title_activity_open_file" >
+            android:label="@string/title_activity_open_file"
+            android:launchMode="singleTop">
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
             <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

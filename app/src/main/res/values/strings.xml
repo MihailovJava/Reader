@@ -11,4 +11,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="access_denied">Access denied!</string>
+    <string name="action_search">Search</string>
+    <string name="search_hint">Type file name</string>
+    <string name="search_title">Search result</string>
+    <string name="nothing_found">Nothing found</string>
+    <string name="search_dialog_title">Searching...</string>
 </resources>
