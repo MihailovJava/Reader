@@ -1,6 +1,8 @@
 package ru.edu.reader.ui.activity;
 
 import ru.edu.reader.R;
+import ru.edu.reader.ui.fragments.PageFragment;
+import ru.edu.reader.util.EBookParser;
 import ru.edu.reader.util.SystemUiHider;
 
 import android.annotation.TargetApi;
@@ -8,9 +10,19 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Menu;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
+
+import java.io.File;
+import java.util.List;
 
 
 /**
@@ -19,7 +31,7 @@ import android.view.View;
  *
  * @see SystemUiHider
  */
-public class ReadActivity extends Activity {
+public class ReadActivity extends FragmentActivity {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -47,15 +59,16 @@ public class ReadActivity extends Activity {
      * The instance of the {@link SystemUiHider} for this activity.
      */
     private SystemUiHider mSystemUiHider;
+    ViewPager viewPager;
+    PagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_read);
-
         final View controlsView = findViewById(R.id.fullscreen_content_controls);
-        final View contentView = findViewById(R.id.pager);
+        final View contentView = findViewById(R.id.viewPager);
 
         // Set up an instance of SystemUiHider to control the system UI for
         // this activity.
@@ -125,6 +138,13 @@ public class ReadActivity extends Activity {
         // created, to briefly hint to the user that UI controls
         // are available.
         delayedHide(100);
+        Display display = getWindowManager().getDefaultDisplay();
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        EBookParser bookPages = new EBookParser(new File("/sdcard/download/test.fb2"),
+                viewPager.getMeasuredWidth(),viewPager.getMeasuredHeight());
+        //((TextView) findViewById(R.id.textView2)).setText(bookPages.getPage(0));
+        pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(),bookPages);
+        viewPager.setAdapter(pagerAdapter);
     }
 
 
@@ -160,9 +180,22 @@ public class ReadActivity extends Activity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.actionbar,menu);
-        return true;
+    private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+        EBookParser book;
+
+        public MyFragmentPagerAdapter(FragmentManager fm, EBookParser book) {
+            super(fm);
+            this.book = book;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return PageFragment.newInstance(position);
+        }
+
+        @Override
+        public int getCount() {
+            return book.getPageCount();
+        }
     }
 }
