@@ -134,6 +134,8 @@ public class OpenFileAdapter extends BaseAdapter implements View.OnClickListener
         if (position == 0){
             convertView = convertView == null ? LayoutInflater.from(context).inflate(R.layout.open_file_item, null) : convertView;
             TextView fileNameText = (TextView) convertView.findViewById(R.id.file_name);
+            TextView fileDirText = (TextView) convertView.findViewById(R.id.full_directory);
+            fileDirText.setVisibility(View.GONE);
             fileNameText.setText(context.getString(R.string.back_text));
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
