@@ -141,7 +141,7 @@ public class ReadActivity extends FragmentActivity {
         Display display = getWindowManager().getDefaultDisplay();
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         EBookParser bookPages = new EBookParser(new File("/sdcard/download/test.fb2"),
-                viewPager.getMeasuredWidth(),viewPager.getMeasuredHeight());
+                display.getWidth(),display.getHeight());
         //((TextView) findViewById(R.id.textView2)).setText(bookPages.getPage(0));
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(),bookPages);
         viewPager.setAdapter(pagerAdapter);
