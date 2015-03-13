@@ -18,4 +18,5 @@
     <string name="search_dialog_title">Searching...</string>
     <string name="title_activity_preview">PreviewActivity</string>
     <string name="action_read">Read</string>
+    <string name="back_text">...</string>
 </resources>

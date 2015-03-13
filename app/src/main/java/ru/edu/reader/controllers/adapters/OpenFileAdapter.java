@@ -114,12 +114,14 @@ public class OpenFileAdapter extends BaseAdapter implements View.OnClickListener
 
     @Override
     public int getCount() {
-        return files.size();
+        return files.size()+1;
     }
 
     @Override
     public Object getItem(int position) {
-        return files.get(position);
+        if (position > 0)
+            return files.get(position-1);
+        return null;
     }
 
     @Override
@@ -129,28 +131,40 @@ public class OpenFileAdapter extends BaseAdapter implements View.OnClickListener
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
-        convertView = convertView == null ? LayoutInflater.from(context).inflate(R.layout.open_file_item,null) : convertView;
-        TextView fileNameText = (TextView) convertView.findViewById(R.id.file_name);
-        TextView fileDirText = (TextView) convertView.findViewById(R.id.full_directory);
-        ImageView fileImage = (ImageView) convertView.findViewById(R.id.file_image);
-        File file = (File) getItem(position);
-
-        String fileName = file.getName();
-        fileNameText.setText(fileName);
-
-        if(file.isFile()){
-            fileImage.setImageResource(R.drawable.book_img);
-            fileDirText.setText(file.getAbsolutePath());
-            fileDirText.setVisibility(View.VISIBLE);
+        if (position == 0){
+            convertView = convertView == null ? LayoutInflater.from(context).inflate(R.layout.open_file_item, null) : convertView;
+            TextView fileNameText = (TextView) convertView.findViewById(R.id.file_name);
+            fileNameText.setText(context.getString(R.string.back_text));
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((Activity) context).onBackPressed();
+                }
+            });
+            return convertView;
         }else {
-            fileImage.setImageResource(R.drawable.folder_img);
-            fileDirText.setVisibility(View.GONE);
-        }
-        convertView.setTag(R.integer.tag_file,file);
-        convertView.setOnClickListener(this);
+            convertView = convertView == null ? LayoutInflater.from(context).inflate(R.layout.open_file_item, null) : convertView;
+            TextView fileNameText = (TextView) convertView.findViewById(R.id.file_name);
+            TextView fileDirText = (TextView) convertView.findViewById(R.id.full_directory);
+            ImageView fileImage = (ImageView) convertView.findViewById(R.id.file_image);
+            File file = (File) getItem(position);
 
-        return convertView;
+            String fileName = file.getName();
+            fileNameText.setText(fileName);
+
+            if (file.isFile()) {
+                fileImage.setImageResource(R.drawable.book_img);
+                fileDirText.setText(file.getAbsolutePath());
+                fileDirText.setVisibility(View.VISIBLE);
+            } else {
+                fileImage.setImageResource(R.drawable.folder_img);
+                fileDirText.setVisibility(View.GONE);
+            }
+            convertView.setTag(R.integer.tag_file, file);
+            convertView.setOnClickListener(this);
+
+            return convertView;
+        }
     }
 
     /*
