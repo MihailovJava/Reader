@@ -6,7 +6,7 @@ import ru.edu.reader.util.EBookParser;
 import ru.edu.reader.util.SystemUiHider;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,10 +19,9 @@ import android.support.v4.view.ViewPager;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
+
 
 import java.io.File;
-import java.util.List;
 
 
 /**
@@ -61,12 +60,16 @@ public class ReadActivity extends FragmentActivity {
     private SystemUiHider mSystemUiHider;
     ViewPager viewPager;
     PagerAdapter pagerAdapter;
+    String pathToFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_read);
+
+        Intent intent = getIntent();
+        pathToFile = intent.getExtras().getString(getString(R.string.file_name));
         final View controlsView = findViewById(R.id.fullscreen_content_controls);
         final View contentView = findViewById(R.id.viewPager);
 
@@ -140,7 +143,7 @@ public class ReadActivity extends FragmentActivity {
         delayedHide(100);
         Display display = getWindowManager().getDefaultDisplay();
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        EBookParser bookPages = new EBookParser(new File("/sdcard/download/test.fb2"),
+        EBookParser bookPages = new EBookParser(new File(pathToFile),
                 display.getWidth(),display.getHeight());
         //((TextView) findViewById(R.id.textView2)).setText(bookPages.getPage(0));
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(),bookPages);
@@ -190,7 +193,9 @@ public class ReadActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return PageFragment.newInstance(position);
+            PageFragment pageFragment = PageFragment.newInstance(position);
+            pageFragment.setPageText(book.getPage(position));
+            return pageFragment;
         }
 
         @Override

@@ -2,6 +2,7 @@ package ru.edu.reader.controllers.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 import ru.edu.reader.R;
 import ru.edu.reader.controllers.tasks.SearchFilesTask;
+import ru.edu.reader.ui.activity.ReadActivity;
 
 /**
  * Адаптер для файловой системы андроид
@@ -96,12 +98,10 @@ public class OpenFileAdapter extends BaseAdapter implements View.OnClickListener
         for (File fromFiles : files) {
             file = fromFiles;
             if (file.isFile()) {
-                if (!file.getName().matches(REG_EX_EPUB) && !file.getName().matches(REG_EX_FB2)) {
+                boolean a = file.getName().matches(REG_EX_EPUB);
+                boolean b = file.getName().matches(REG_EX_FB2);
+                if (!a && !b) {
                     this.files.remove(file);
-                } else {
-                    if (!file.canExecute()) {
-                        this.files.remove(file);
-                    }
                 }
             }
         }
@@ -168,7 +168,9 @@ public class OpenFileAdapter extends BaseAdapter implements View.OnClickListener
                 me.setFiles(new ArrayList<>(Arrays.asList(files)))
                         .notifyDataSetChanged();
             }else {
-                //TODO Добавить переход на активити чтения
+                Intent intent = new Intent(context, ReadActivity.class);
+                intent.putExtra(context.getString(R.string.file_name),file.getAbsolutePath());
+                context.startActivity(intent);
             }
         }catch (NullPointerException e){
             Toast.makeText(context,R.string.access_denied,Toast.LENGTH_SHORT).show();

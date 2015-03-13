@@ -29,6 +29,7 @@ public class PageFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private int pageNumber;
     private TextView pageTextView;
+    private String pageText;
 
     private OnFragmentInteractionListener mListener;
 
@@ -65,6 +66,7 @@ public class PageFragment extends Fragment {
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_page, container, false);
         pageTextView = (TextView) layout.findViewById(R.id.pageText);
+        pageTextView.setText(pageText);
         return layout;
     }
 
@@ -97,7 +99,7 @@ public class PageFragment extends Fragment {
     }
 
     public void setPageText(String text){
-        pageTextView.setText(text);
+        pageText = text;
     }
 
 }
