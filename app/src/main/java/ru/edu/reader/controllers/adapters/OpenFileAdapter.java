@@ -149,6 +149,7 @@ public class OpenFileAdapter extends BaseAdapter implements View.OnClickListener
         }
         convertView.setTag(R.integer.tag_file,file);
         convertView.setOnClickListener(this);
+
         return convertView;
     }
 
