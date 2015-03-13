@@ -16,4 +16,6 @@
     <string name="search_title">Search result</string>
     <string name="nothing_found">Nothing found</string>
     <string name="search_dialog_title">Searching...</string>
+    <string name="title_activity_preview">PreviewActivity</string>
+    <string name="action_read">Read</string>
 </resources>

@@ -13,7 +13,7 @@ import java.util.List;
 import ru.edu.reader.R;
 import ru.edu.reader.controllers.adapters.OpenFileAdapter;
 
-
+//TODO Расставить комменты
 public class SearchFilesTask extends AsyncTask<String,Void,List<File>> {
 
     private Context context;
