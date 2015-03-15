@@ -28,4 +28,8 @@
         <item name="android:textColor">#F0F0F0</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="OpenFIleItemStyle">
+       <item name="android:background">@drawable/open_file_bg</item>
+    </style>
 </resources>
