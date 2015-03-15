@@ -50,6 +50,17 @@
 
         </LinearLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="ДЕМОНСТРАЦИЯ\nПРОТОТИПА"
+            android:id="@+id/textView"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="#ffff0300"
+            android:background="#ff002fff" />
+
     </FrameLayout>
 
 </FrameLayout>
