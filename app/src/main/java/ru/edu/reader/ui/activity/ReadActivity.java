@@ -10,13 +10,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -27,7 +27,14 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 
 
 /**
@@ -73,12 +80,14 @@ public class ReadActivity extends FragmentActivity {
         setContentView(R.layout.activity_read);
         preferences = getPreferences(MODE_PRIVATE);
         Intent intent = getIntent();
-        pathToFile = intent.getExtras().getString(getString(R.string.file_name));
-        if (!pathToFile.equals(preferences.getString(PATH_TO_FILE,""))){
-            SharedPreferences.Editor ed = preferences.edit();
-            ed.putString(PATH_TO_FILE, pathToFile);
-            ed.putInt(CURRENT_PAGE, 0);
-            ed.commit();
+        if (intent.getExtras() != null) {
+            pathToFile = intent.getExtras().getString(getString(R.string.file_name));
+            if (!pathToFile.equals(preferences.getString(PATH_TO_FILE, ""))) {
+                SharedPreferences.Editor ed = preferences.edit();
+                ed.putString(PATH_TO_FILE, pathToFile);
+                ed.putInt(CURRENT_PAGE, 0);
+                ed.commit();
+            }
         }
         final View controlsView = findViewById(R.id.fullscreen_content_controls);
         final View contentView = findViewById(R.id.viewPager);
@@ -167,6 +176,36 @@ public class ReadActivity extends FragmentActivity {
         int mActionBarSize = (int) styledAttributes.getDimension(0, 0);
         styledAttributes.recycle();
         String pathToFile = preferences.getString(PATH_TO_FILE, "");
+        if (pathToFile.equals("")){
+            SharedPreferences.Editor ed = preferences.edit();
+            ed.putInt(CURRENT_PAGE, 0);
+            ed.commit();
+            pathToFile = "file:///android_asset/promo.fb2";
+            StringBuilder buf=new StringBuilder();
+            InputStream json;
+            try {
+                json = getAssets().open("promo.fb2");
+                BufferedReader in=
+                        new BufferedReader(new InputStreamReader(json, "UTF-8"));
+                String str;
+
+                while ((str=in.readLine()) != null) {
+                    buf.append(str);
+                }
+
+                in.close();
+                pathToFile = "/sdcard/promo.fb2";
+                File file = new File(pathToFile);
+                FileOutputStream stream = new FileOutputStream(file);
+                OutputStreamWriter myOutWriter =
+                        new OutputStreamWriter(stream);
+                myOutWriter.append(buf.toString());
+                myOutWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
         book = new EBookParser(new File(pathToFile),
                 display.getWidth(),display.getHeight()-mActionBarSize);
         seekBar.setMax(book.getPageCount()-1);

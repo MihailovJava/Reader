@@ -103,7 +103,7 @@ public class EBookParser {
                 bookLines.add(newString.toString());
             }
         }
-        pageCount = (int) (Math.floor(bookLines.size() / linesInPage));
+        pageCount = (int) (Math.floor(bookLines.size() / linesInPage))+1;
     }
 
     private List<String> getXMLStrings() throws ParserConfigurationException, IOException, SAXException {
