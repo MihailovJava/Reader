@@ -25,7 +25,7 @@
     <style name="ButtonBarButton" />
 
     <style name="KeyText" >
-        <item name="android:textColor">#F0F0F0</item>
+        <item name="android:textColor">@color/highlighted_text_material_light</item>
         <item name="android:textStyle">bold</item>
     </style>
 

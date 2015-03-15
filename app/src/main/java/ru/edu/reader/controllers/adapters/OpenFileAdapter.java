@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 import ru.edu.reader.R;
 import ru.edu.reader.controllers.tasks.SearchFilesTask;
+import ru.edu.reader.ui.activity.PreviewActivity;
 import ru.edu.reader.ui.activity.ReadActivity;
 
 /**
@@ -103,6 +104,10 @@ public class OpenFileAdapter extends BaseAdapter implements View.OnClickListener
                 if (!a && !b) {
                     this.files.remove(file);
                 }
+            }else {
+                if (!file.isDirectory()){
+                    this.files.remove(file);
+                }
             }
         }
         return file;
@@ -183,10 +188,14 @@ public class OpenFileAdapter extends BaseAdapter implements View.OnClickListener
                 File[] files = file.listFiles();
                 me.setFiles(new ArrayList<>(Arrays.asList(files)))
                         .notifyDataSetChanged();
-            }else {
-                Intent intent = new Intent(context, ReadActivity.class);
+            }else
+            if(file.isFile()){
+                Intent intent = new Intent(context, PreviewActivity.class);
                 intent.putExtra(context.getString(R.string.file_name),file.getAbsolutePath());
                 context.startActivity(intent);
+            }
+            else {
+                Toast.makeText(context,R.string.access_denied,Toast.LENGTH_SHORT).show();
             }
         }catch (NullPointerException e){
             Toast.makeText(context,R.string.access_denied,Toast.LENGTH_SHORT).show();

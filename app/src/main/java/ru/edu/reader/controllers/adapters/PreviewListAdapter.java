@@ -26,6 +26,21 @@ public class PreviewListAdapter extends ArrayAdapter<Item> {
     }
 
     @Override
+    public int getCount() {
+        return values.size();
+    }
+
+    @Override
+    public int getPosition(Item item) {
+        return values.indexOf(item);
+    }
+
+    @Override
+    public Item getItem(int position) {
+        return values.get(position);
+    }
+
+    @Override
     public int getItemViewType(int position) {
         return getItem(position).getViewType();
     }

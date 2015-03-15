@@ -35,7 +35,8 @@ public class OpenFileActivity extends ActionBarActivity {
         } else {
             filesDirectory.setAdapter(adapter);
         }
-        if (getIntent().getAction().equals(Intent.ACTION_MAIN))
+        String action = getIntent().getAction();
+        if (action != null && action.equals(Intent.ACTION_MAIN))
             handleIntent(getIntent());
     }
 
