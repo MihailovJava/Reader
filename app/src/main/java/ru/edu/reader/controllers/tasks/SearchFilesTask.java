@@ -13,7 +13,14 @@ import java.util.List;
 import ru.edu.reader.R;
 import ru.edu.reader.controllers.adapters.OpenFileAdapter;
 
-//TODO Расставить комменты
+/**
+ * Класс SearchFilesTask, реализует асинхронную задачу поиска файлов в файловой системе устройства.
+ * Входнные данные параметры поиска String[]
+ * 0 - запрос на поиск
+ * 1 - формат .fb2
+ * 2 - формат .epub
+ * Результат поиска - это файлы расширения .fb2 и .epub, в которых есть сочетание симвоов из запроса на поиск
+ */
 public class SearchFilesTask extends AsyncTask<String,Void,List<File>> {
 
     private Context context;
@@ -53,6 +60,12 @@ public class SearchFilesTask extends AsyncTask<String,Void,List<File>> {
             dialog.dismiss();
     }
 
+    /**
+     * Метод рекурсивного поиска по всем доступным категориям.
+     * @param query запрос
+     * @param file текушая папка
+     * @param result список найденных файлов
+     */
     private void search(String query,File file,List<File> result){
         for (File innerFile : file.listFiles()){
             if(innerFile.isFile()){

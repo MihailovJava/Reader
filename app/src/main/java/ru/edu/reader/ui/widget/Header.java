@@ -8,12 +8,17 @@ import android.widget.TextView;
 import ru.edu.reader.R;
 
 /**
- * Created by Nixy on 13.03.2015.
+ * Класс Header. Расишряет Item. Описывает заголовок для ListView С категориями.
+ *
  */
 public class Header implements Item {
 
     private String name;
 
+    /**
+     * Конструктор класса
+     * @param name название заголовка
+     */
     public Header(String name) {
         this.name = name;
     }

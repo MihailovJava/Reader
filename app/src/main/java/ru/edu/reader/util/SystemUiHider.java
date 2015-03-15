@@ -32,7 +32,7 @@ public abstract class SystemUiHider {
      * the top of the activity layout.
      * <p/>
      * This flag isn't used on newer devices because the <a
-     * href="http://developer.android.com/design/patterns/actionbar.html">action
+     * href="http://developer.android.com/design/patterns/menu_read.html">action
      * bar</a>, the most important structural element of an Android app, should
      * be visible and not obscured by the system UI.
      */

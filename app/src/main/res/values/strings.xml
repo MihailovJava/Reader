@@ -20,4 +20,13 @@
     <string name="action_read">Read</string>
     <string name="back_text">...</string>
     <string name="file_name">file_name</string>
+    <string name="about">Book information</string>
+    <string name="author">Author:</string>
+    <string name="genre">Genre:</string>
+    <string name="info">File info</string>
+    <string name="title">Title:</string>
+    <string name="book_id">Book ID:</string>
+    <string name="program_used">Program:</string>
+    <string name="file_path">Path:</string>
+    <string name="annotation">Annotation</string>
 </resources>
