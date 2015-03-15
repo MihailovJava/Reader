@@ -3,6 +3,7 @@ package ru.edu.reader.util;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.widget.TextView;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -66,7 +67,7 @@ public class EBookParser {
     }
 
     private void calcParams(){
-        linesInPage = (int) (Math.floor(pageHeight / (2.5*textSize)));
+        linesInPage = getMaxLines();
         charsInLine = (int) (Math.floor(pageWidth / textSize));
     }
 
@@ -83,7 +84,7 @@ public class EBookParser {
         }
 
         for (String line : lines){
-            StringTokenizer stringTokenizer = new StringTokenizer(line," !@#$%^&*()-=+|/?,.:;'\"\\", true);
+            StringTokenizer stringTokenizer = new StringTokenizer(line," ", true);
             StringBuilder newString = new StringBuilder();
 
             while (stringTokenizer.hasMoreTokens()){
@@ -131,11 +132,11 @@ public class EBookParser {
         return sb.toString();
     }
 
-    public int getPageCount() {
-        return pageCount;
+    private int getMaxLines() {
+        return (pageHeight / (textSize*2));
     }
 
-    public void setPageCount(int pageCount) {
-        this.pageCount = pageCount;
+    public int getPageCount() {
+        return pageCount;
     }
 }

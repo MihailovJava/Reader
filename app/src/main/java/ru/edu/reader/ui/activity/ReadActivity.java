@@ -7,6 +7,9 @@ import ru.edu.reader.util.SystemUiHider;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,11 +17,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 
 import java.io.File;
@@ -31,16 +37,8 @@ import java.io.File;
  * @see SystemUiHider
  */
 public class ReadActivity extends FragmentActivity {
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-     */
-    private static final boolean AUTO_HIDE = true;
 
-    /**
-     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
-     */
+    private static final boolean AUTO_HIDE = true;
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
 
     /**
@@ -53,6 +51,8 @@ public class ReadActivity extends FragmentActivity {
      * The flags to pass to {@link SystemUiHider#getInstance}.
      */
     private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
+    private static final String PATH_TO_FILE = "path_to_file";
+    private static final String CURRENT_PAGE = "current_page";
 
     /**
      * The instance of the {@link SystemUiHider} for this activity.
@@ -61,15 +61,25 @@ public class ReadActivity extends FragmentActivity {
     ViewPager viewPager;
     PagerAdapter pagerAdapter;
     String pathToFile;
+    TextView progressText;
+    SeekBar seekBar;
+    EBookParser book;
+    SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_read);
-
+        preferences = getPreferences(MODE_PRIVATE);
         Intent intent = getIntent();
         pathToFile = intent.getExtras().getString(getString(R.string.file_name));
+        if (!pathToFile.equals(preferences.getString(PATH_TO_FILE,""))){
+            SharedPreferences.Editor ed = preferences.edit();
+            ed.putString(PATH_TO_FILE, pathToFile);
+            ed.putInt(CURRENT_PAGE, 0);
+            ed.commit();
+        }
         final View controlsView = findViewById(R.id.fullscreen_content_controls);
         final View contentView = findViewById(R.id.viewPager);
 
@@ -130,7 +140,7 @@ public class ReadActivity extends FragmentActivity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-       // findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        // findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
     }
 
     @Override
@@ -141,16 +151,77 @@ public class ReadActivity extends FragmentActivity {
         // created, to briefly hint to the user that UI controls
         // are available.
         delayedHide(100);
-        Display display = getWindowManager().getDefaultDisplay();
+
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        EBookParser bookPages = new EBookParser(new File(pathToFile),
-                display.getWidth(),display.getHeight());
-        //((TextView) findViewById(R.id.textView2)).setText(bookPages.getPage(0));
-        pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(),bookPages);
-        viewPager.setAdapter(pagerAdapter);
+        viewPager.setOnPageChangeListener(pageChangeListener);
+        progressText = (TextView) findViewById(R.id.progress_text);
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
+        loadBook();
+        seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
     }
 
+    private void loadBook(){
+        Display display = getWindowManager().getDefaultDisplay();
+        final TypedArray styledAttributes = this.getTheme().obtainStyledAttributes(
+                new int[] { android.R.attr.actionBarSize });
+        int mActionBarSize = (int) styledAttributes.getDimension(0, 0);
+        styledAttributes.recycle();
+        String pathToFile = preferences.getString(PATH_TO_FILE, "");
+        book = new EBookParser(new File(pathToFile),
+                display.getWidth(),display.getHeight()-mActionBarSize);
+        seekBar.setMax(book.getPageCount()-1);
 
+        pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(),book);
+        viewPager.removeAllViews();
+        viewPager.setAdapter(null);
+        viewPager.invalidate();
+        pagerAdapter.notifyDataSetChanged();
+        viewPager.setAdapter(pagerAdapter);
+        setBookProgress(preferences.getInt(CURRENT_PAGE, 0));
+    }
+
+    public void setBookProgress(int pageIndex){
+        SharedPreferences.Editor ed = preferences.edit();
+        ed.putInt(CURRENT_PAGE, pageIndex);
+        ed.commit();
+        viewPager.setCurrentItem(pageIndex);
+        progressText.setText((pageIndex+1)+"/"+book.getPageCount());
+        seekBar.setProgress(pageIndex);
+    }
+
+    SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            setBookProgress(progress);
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
+
+    ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            setBookProgress(position);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
     /**
      * Touch listener to use for in-layout UI controls to delay hiding the
      * system UI. This is to prevent the jarring behavior of controls going away
@@ -183,7 +254,7 @@ public class ReadActivity extends FragmentActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+    private class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {
         EBookParser book;
 
         public MyFragmentPagerAdapter(FragmentManager fm, EBookParser book) {
@@ -202,5 +273,11 @@ public class ReadActivity extends FragmentActivity {
         public int getCount() {
             return book.getPageCount();
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        loadBook();
     }
 }
