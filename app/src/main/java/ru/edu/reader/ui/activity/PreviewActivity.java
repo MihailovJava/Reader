@@ -18,9 +18,13 @@ import ru.edu.reader.ui.widget.Header;
 import ru.edu.reader.ui.widget.Item;
 import ru.edu.reader.util.EBookMetaData;
 
+/**
+ * Активность, описывающая мета-данные открываемой книги. В ней пользователь узнает краткую информацию
+ * о книге и принимает решение о чтение.
+ */
 public class PreviewActivity extends ActionBarActivity {
 
-    private String filePath;
+    private String filePath;    // путь до файла
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

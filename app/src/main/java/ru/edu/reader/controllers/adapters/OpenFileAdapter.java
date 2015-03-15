@@ -228,6 +228,10 @@ public class OpenFileAdapter extends BaseAdapter implements View.OnClickListener
             return lhs.getPath().compareTo(rhs.getPath());
     }
 
+    /**
+     * Запуск задачи поиска по запросу
+     * @param query запрос
+     */
     public void find(String query) {
         new SearchFilesTask(context).execute(query,ROOT_PATH,REG_EX_EPUB,REG_EX_FB2);
     }

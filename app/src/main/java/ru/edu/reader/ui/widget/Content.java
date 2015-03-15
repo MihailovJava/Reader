@@ -9,11 +9,19 @@ import android.widget.TextView;
 
 import ru.edu.reader.R;
 
+/**
+ * Класс Content. Расишряет Item. Описывает контент для ListView С категориями.
+ */
 public class Content implements Item {
 
-    String key;
-    String value;
+    private String key;
+    private String value;
 
+    /**
+     * Конструктор класса
+     * @param key ключ элемента
+     * @param values значение элемента
+     */
     public Content(String key, String values) {
         this.key = key;
         this.value = values;

@@ -13,12 +13,19 @@ import java.util.Set;
 
 import ru.edu.reader.ui.widget.Item;
 
-
+/**
+ * Адаптер для ListView, реализующего заполнение по категориям.
+ */
 public class PreviewListAdapter extends ArrayAdapter<Item> {
 
-    List<Item> values;
-    Context context;
+    private List<Item> values;
+    private Context context;
 
+    /**
+     * Конструктор адаптера
+     * @param context контекст
+     * @param values значения элементов для заполнения
+     */
     public PreviewListAdapter(Context context,List<Item> values){
         super(context,0,values);
         this.values = values;

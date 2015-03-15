@@ -19,6 +19,11 @@ import java.util.Arrays;
 import ru.edu.reader.R;
 import ru.edu.reader.controllers.adapters.OpenFileAdapter;
 
+
+/**
+ * Активиность, реализующая работу с файловым пространством устройства.
+ * Позволяет искать на устройстве файлы нужного формата (.fb2,.epub)
+ */
 public class OpenFileActivity extends ActionBarActivity {
 
 
@@ -57,7 +62,6 @@ public class OpenFileActivity extends ActionBarActivity {
                 SearchView searchMenuItem = searchView;
                 if (searchMenuItem != null) {
                     searchView.onActionViewCollapsed();
-                    //searchMenuItem.collapseActionView();
                 }
                 return false;
             }
