@@ -93,4 +93,13 @@ public class EBookMetaData {
             return null;
         }
     }
+
+    public String getAnnotation(){
+        NodeList nodes = root.getElementsByTagName("annotation");
+        if (nodes.getLength() > 0) {
+            return nodes.item(0).getTextContent();
+        }else{
+            return null;
+        }
+    }
 }
